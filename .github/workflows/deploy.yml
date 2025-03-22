@@ -1,0 +1,22 @@
+name: Deploy to Firebase
+
+on: [push]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Create Firebase Service Account File
+        run: echo "$FIREBASE_SERVICE_ACCOUNT" > $HOME/firebase-key.json
+        shell: bash
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Deploy to Firebase
+        run: firebase deploy --only hosting --token "$FIREBASE_TOKEN"
